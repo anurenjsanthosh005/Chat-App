@@ -1,8 +1,13 @@
 import React from 'react'
+import NavBar from '../components/NavBar'
+import UserList from '../components/UserList'
 
 const AdminPanel = () => {
   return (
-    <div>AdminPanel</div>
+    <div>
+      <NavBar/>
+      <UserList/>
+    </div>
   )
 }
 

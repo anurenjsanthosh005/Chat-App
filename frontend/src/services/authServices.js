@@ -7,8 +7,8 @@ import mockusers from "../mock-datas/mockUsers";
 
 function login(email, password) {
   return new Promise((resolve, reject) => {
-    console.log('inside the auth function')
-   setTimeout(() => {
+    console.log("inside the auth function");
+    setTimeout(() => {
       const user = mockusers.find(
         (u) => u.email === email && u.password === password
       );
@@ -17,6 +17,7 @@ function login(email, password) {
         resolve({
           token: "dummyToken",
           role: user.role,
+          id:user.id
         });
       } else {
         reject(new Error("invalid credentials"));
