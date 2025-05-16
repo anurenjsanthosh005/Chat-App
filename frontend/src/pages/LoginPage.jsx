@@ -4,7 +4,7 @@ import login from "../services/authServices";
 import { TextField, Button, Typography, Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import NavBar from "../components/NavBar";
+import axios from "axios";
 
 function LoginPage() {
   const { userLogin } = useAuth();
@@ -21,16 +21,20 @@ function LoginPage() {
     try {
       const email = data.email;
       const password = data.password;
-      const response = await login(email, password);
 
-      // console.log("token :", response.token);
-      // console.log("role :", response.role);
-      // console.log("name :", email);
+      const response = await axios.post("http://localhost:5000/auth/login", {
+        email,
+        password,
+      });
 
-      userLogin({ token: response.token, role: response.role, name:email,id:response.id });
+      const { token, role, id } = response.data;
 
-      //   localStorage.setItem("token", response.token);
-      //   localStorage.setItem("role", response.role);
+      userLogin({
+        token,
+        role,
+        name: email,
+        id,
+      });
 
       if (response.role === "admin") {
         navigate("/admin-pannel");
@@ -38,7 +42,10 @@ function LoginPage() {
         navigate("/dashboard");
       }
     } catch (error) {
-      setLoginError(error.message);
+      const errMsg =
+        error.response?.data?.error || error.message || "Login failed";
+
+      setLoginError(errMsg);
     }
   };
 
