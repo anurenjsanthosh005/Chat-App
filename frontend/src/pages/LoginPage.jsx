@@ -4,7 +4,7 @@ import login from "../services/authServices";
 import { TextField, Button, Typography, Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
+import axiosInstance from "../services/axiosInstance";
 
 function LoginPage() {
   const { userLogin } = useAuth();
@@ -22,21 +22,22 @@ function LoginPage() {
       const email = data.email;
       const password = data.password;
 
-      const response = await axios.post("http://localhost:5000/auth/login", {
+      const response = await axiosInstance.post("/token/", {
         email,
         password,
       });
 
-      const { token, role, id } = response.data;
+      const { access, refresh, role, name, id } = response.data;
 
       userLogin({
-        token,
+        token: access,
+        refreshToken: refresh,
         role,
-        name: email,
+        name,
         id,
       });
 
-      if (response.role === "admin") {
+      if (role === "admin") {
         navigate("/admin-pannel");
       } else {
         navigate("/dashboard");

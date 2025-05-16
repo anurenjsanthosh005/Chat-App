@@ -1,0 +1,36 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django migrations (optional: you might want to keep them if collaborating)
+*/migrations/*.pyc
+*/migrations/*.py[cod]
+*/migrations/__pycache__/
+
+# Virtual environment folder (if inside backend dir)
+venv/
+env/
+
+# SQLite database file
+db.sqlite3
+
+# Django static files collected by collectstatic
+/staticfiles/
+/static/
+
+# IDE/editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env

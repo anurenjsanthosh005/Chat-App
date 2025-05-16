@@ -1,5 +1,5 @@
 import React from "react";
-import mockusers from "../mock-datas/mockUsers";
+// import mockusers from "../mock-datas/mockUsers";
 // const mockusers = [
 //   { email: "anurenj@gmail.com", password: "1234", role: "admin" },
 //   { email: "achu@gmail.com", password: "qwer", role: "user" },

@@ -1,16 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { useActiveUsers } from "../contexts/UsersContext";
+import UserDetails from "./UserDetails";
 
 function UserList() {
-  const { activeUsers, setActiveUsers } = useActiveUsers();
-  const handleDelete = (user) => {
-    console.log("delete button clicked", user.id);
+  
+  const { activeUsers } = useActiveUsers();
+  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-    const updatedUserList = activeUsers.filter((u) => u.id !== user.id);
-    setActiveUsers(updatedUserList);
+  if (!activeUsers || activeUsers.length === 0) {
+    return <div>Users loading...</div>;
+  }
+
+  console.log("ACTIVE USERS", activeUsers);
+  const handleView = (user) => {
+    console.log("view button clicked", user.id);
+
+    setSelectedUser(user);
+    setModalOpen(true);
   };
   return (
     <div>
+      <UserDetails
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        user={selectedUser}
+      />
       <h3>User List</h3>
       <div>
         {activeUsers
@@ -28,13 +44,13 @@ function UserList() {
                 key={user.id}
               >
                 {/* <div>{user.id}</div> */}
-                <div>{user.email}</div>
+                <div>{user.name}</div>
                 <div>{user.role}</div>
                 {/* <div>
                   <button>profile</button>
                 </div> */}
                 <div>
-                  <button onClick={() => handleDelete(user)}>delete</button>
+                  <button onClick={() => handleView(user)}>view</button>
                 </div>
               </div>
             );
