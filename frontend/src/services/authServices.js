@@ -1,9 +1,9 @@
 import React from "react";
-
-const mockusers = [
-  { email: "anurenj@gmail.com", password: "1234", role: "admin" },
-  { email: "achu@gmail.com", password: "qwer", role: "user" },
-];
+import mockusers from "../mock-datas/mockUsers";
+// const mockusers = [
+//   { email: "anurenj@gmail.com", password: "1234", role: "admin" },
+//   { email: "achu@gmail.com", password: "qwer", role: "user" },
+// ];
 
 function login(email, password) {
   return new Promise((resolve, reject) => {

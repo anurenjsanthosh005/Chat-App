@@ -3,8 +3,10 @@ import { useForm } from "react-hook-form";
 import login from "../services/authServices";
 import { TextField, Button, Typography, Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function LoginPage() {
+  const { userLogin } = useAuth();
 
   const {
     register,
@@ -20,9 +22,14 @@ function LoginPage() {
       const password = data.password;
       const response = await login(email, password);
 
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("role", response.role);
-      
+      console.log("token :", response.token);
+      console.log("role :", response.role);
+
+      userLogin({ token: response.token, role: response.role });
+
+      //   localStorage.setItem("token", response.token);
+      //   localStorage.setItem("role", response.role);
+
       if (response.role === "admin") {
         navigate("/admin-pannel");
       } else {
