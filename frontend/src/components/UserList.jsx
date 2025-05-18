@@ -13,7 +13,6 @@ function UserList() {
     return <div>Users loading...</div>;
   }
 
-  console.log("ACTIVE USERS", activeUsers);
   const handleView = (user) => {
     console.log("view button clicked", user.id);
 

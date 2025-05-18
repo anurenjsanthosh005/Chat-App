@@ -41,13 +41,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const userLogout = () => {
-    console.log("INSIDE USER LOGOUT");
 
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("role");
     localStorage.removeItem("name");
     localStorage.removeItem("id");
+    localStorage.removeItem("selectedUser");
+
     setToken(null);
     setRefresh(null);
     setRole(null);

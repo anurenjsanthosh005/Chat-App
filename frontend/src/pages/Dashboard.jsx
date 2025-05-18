@@ -6,6 +6,7 @@ import MainChatSkeleton from "../components/MainChatSkeleton";
 
 const Dashboard = () => {
   const { selectedUser } = useActiveUsers();
+  
   return (
     <div>
       <NavBar />

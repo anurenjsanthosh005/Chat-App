@@ -6,13 +6,12 @@ import axiosInstance from "../services/axiosInstance";
 const UsersContext = createContext();
 
 export const UsersProvider = ({ children }) => {
-
   const [activeUsers, setActiveUsers] = useState(null);
-  const [selectedUser, setSelectedUser] = useState();
+  const [selectedUser, setSelectedUser] = useState(null);
   const { token } = useAuth();
 
   useEffect(() => {
-      if (!token) return;
+    if (!token) return;
 
     const fetchData = async () => {
       try {
@@ -21,10 +20,16 @@ export const UsersProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         });
+        const users = response.data;
+        setActiveUsers(users);
 
-        console.log("response.data",response.data);
-        
-        setActiveUsers(response.data);
+        const savedUserId = localStorage.getItem("selectedUserId");
+        if (savedUserId) {
+          const user = users.find((u) => u.id === Number(savedUserId));
+          if (user) {
+            setSelectedUser(user);
+          }
+        }
       } catch (err) {
         console.error("Error fetching users", err);
       }
@@ -33,7 +38,9 @@ export const UsersProvider = ({ children }) => {
   }, [token]);
 
   return (
-    <UsersContext.Provider value={{ activeUsers, setActiveUsers, selectedUser,setSelectedUser }}>
+    <UsersContext.Provider
+      value={{ activeUsers, setActiveUsers, selectedUser, setSelectedUser }}
+    >
       {children}
     </UsersContext.Provider>
   );
