@@ -8,6 +8,7 @@ const UsersContext = createContext();
 export const UsersProvider = ({ children }) => {
   const [activeUsers, setActiveUsers] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [activeGroups, setActiveGroups] = useState(null);
   const { token } = useAuth();
 
   useEffect(() => {
@@ -34,12 +35,26 @@ export const UsersProvider = ({ children }) => {
         console.error("Error fetching users", err);
       }
     };
+
+    const fetchGroups = async () => {
+      try {
+        const response = await axiosInstance.get("/groups/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const groups = response.data;
+        setActiveGroups(groups);
+      } catch (err) {
+        console.error("Error fetching groups", err);
+      }
+    };
+
+    fetchGroups();
     fetchData();
   }, [token]);
 
   return (
     <UsersContext.Provider
-      value={{ activeUsers, setActiveUsers, selectedUser, setSelectedUser }}
+      value={{ activeUsers, setActiveUsers, selectedUser, setSelectedUser, activeGroups, setActiveGroups }}
     >
       {children}
     </UsersContext.Provider>

@@ -25,7 +25,11 @@ function MainChat() {
 
     setMessages([]);
 
-    const wsUrl = `ws://127.0.0.1:8000/ws/chat/?receiverId=${selectedUser.id}&token=${token}`;
+    const wsUrl =
+      selectedUser.type === "group"
+        ? `ws://127.0.0.1:8000/ws/group-chat/?groupId=${selectedUser.id}&token=${token}`
+        : `ws://127.0.0.1:8000/ws/chat/?receiverId=${selectedUser.id}&token=${token}`;
+
     socketRef.current = new WebSocket(wsUrl);
 
     socketRef.current.onopen = () => {
@@ -49,13 +53,21 @@ function MainChat() {
   const onSubmit = (data) => {
     if (!selectedUser) return;
 
-    const newMessage = {
-      id: Date.now(),
-      senderId: currentUserId,
-      receiverId: selectedUser.id,
-      content: data.message,
-      timestamp: new Date().toISOString(),
-    };
+    const newMessage =
+      selectedUser.type === "group"
+        ? {
+            senderId: currentUserId,
+            groupId: selectedUser.id,
+            content: data.message,
+            timestamp: new Date().toISOString(),
+          }
+        : {
+            id: Date.now(),
+            senderId: currentUserId,
+            receiverId: selectedUser.id,
+            content: data.message,
+            timestamp: new Date().toISOString(),
+          };
 
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify({ message: newMessage }));
@@ -93,7 +105,11 @@ function MainChat() {
           }}
         />
         <h3 style={{ margin: 0 }}>{selectedUser?.name || "Select a user"}</h3>
-        <button>Profile</button>
+        {selectedUser.type === "group" ? (
+          <button>members</button>
+        ) : (
+          <button>profile</button>
+        )}
       </div>
 
       <div
@@ -115,35 +131,61 @@ function MainChat() {
             gap: "10px",
           }}
         >
-          {messages.map((msg) => (
+          {messages.length === 0 ? (
             <div
-              key={msg.id}
-              style={{
-                maxWidth: "60%",
-                alignSelf:
-                  msg.senderId === currentUserId ? "flex-end" : "flex-start",
-                backgroundColor:
-                  msg.senderId === currentUserId ? "#DCF8C6" : "#ffffff",
-                padding: "8px 12px",
-                borderRadius: "12px",
-              }}
+              style={{ textAlign: "center", color: "#888", marginTop: "20px" }}
             >
-              <div>{msg.content}</div>
-              <div
-                style={{
-                  fontSize: "10px",
-                  color: "#555",
-                  marginTop: "4px",
-                  textAlign: "right",
-                }}
-              >
-                {new Date(msg.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div>
+              Send messages to start a conversation
             </div>
-          ))}
+          ) : (
+            messages.map((msg) => {
+              const isCurrentUser = msg.senderId === currentUserId;
+              const isGroupChat = selectedUser?.type === "group";
+
+              return (
+                <div
+                  key={msg.id}
+                  style={{
+                    maxWidth: "60%",
+                    alignSelf: isCurrentUser ? "flex-end" : "flex-start",
+                    backgroundColor: isCurrentUser ? "#DCF8C6" : "#ffffff",
+                    padding: "8px 12px",
+                    borderRadius: "12px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {isGroupChat && !isCurrentUser && (
+                    <div
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "12px",
+                        marginBottom: "4px",
+                        color: "#333",
+                      }}
+                    >
+                      {msg.senderName}
+                    </div>
+                  )}
+
+                  <div>{msg.content}</div>
+
+                  <div
+                    style={{
+                      fontSize: "10px",
+                      color: "#555",
+                      marginTop: "4px",
+                      textAlign: "right",
+                    }}
+                  >
+                    {new Date(msg.timestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                </div>
+              );
+            })
+          )}
 
           <div ref={messagesEndRef} />
         </div>

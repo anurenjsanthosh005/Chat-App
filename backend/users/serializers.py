@@ -18,6 +18,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
     
 class UserSerializer(serializers.ModelSerializer):
+
+    type = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
-        fields = ['id', 'email', 'name', 'role']
+        fields = ['id', 'email', 'name', 'role','type']
+
+    def get_type(self, obj):
+        return "user"
