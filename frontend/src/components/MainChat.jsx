@@ -42,10 +42,11 @@ function MainChat() {
 
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log("RECIEVED MESSAGE :",data);
+
       setMessages((prev) => {
-        // Check if message with same id exists
         if (prev.some((msg) => msg.id === data.id)) {
-          return prev; // ignore duplicate
+          return prev;
         }
         return [...prev, data];
       });
@@ -60,13 +61,11 @@ function MainChat() {
     };
   }, [selectedUser, token]);
 
-  // Upload image and return image URL
   const uploadImage = async (file) => {
     try {
       const formData = new FormData();
       formData.append("image", file);
 
-      // 👇 Add either group_id or receiver_id
       if (selectedUser.type === "group") {
         formData.append("group_id", selectedUser.id);
       } else {
@@ -82,17 +81,16 @@ function MainChat() {
 
       return res.data.content;
     } catch (err) {
-      alert("Image upload failed: " + err.response?.data?.error || err.message);
+      alert("Image upload failed: " + (err.response?.data?.error || err.message));
       return null;
     }
   };
 
-  // Handle file selection
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setImageFile(file);
-    setValue("message", ""); // clear text input
+    setValue("message", "");
     e.target.value = "";
   };
 
@@ -104,7 +102,7 @@ function MainChat() {
 
     if (imageFile) {
       const imageUrl = await uploadImage(imageFile);
-      if (!imageUrl) return; // stop if upload fails
+      if (!imageUrl) return;
       content = imageUrl;
       isImage = true;
     }
@@ -119,7 +117,6 @@ function MainChat() {
             timestamp: new Date().toISOString(),
           }
         : {
-            // id: Date.now(),
             senderId: currentUserId,
             receiverId: selectedUser.id,
             content,
@@ -137,22 +134,13 @@ function MainChat() {
 
   const getImageSrc = (msg) => {
     if (msg.isImage) {
-      return msg.content.startsWith("http")
-        ? msg.content
-        : `${MEDIA_BASE_URL}${msg.content}`;
+      return msg.content.startsWith("http") ? msg.content : `${MEDIA_BASE_URL}${msg.content}`;
     }
     return "";
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "90vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div style={{ width: "100%", height: "90vh", display: "flex", flexDirection: "column" }}>
       <div
         style={{
           height: "7%",
@@ -173,11 +161,7 @@ function MainChat() {
           }}
         />
         <h3 style={{ margin: 0 }}>{selectedUser?.name || "Select a user"}</h3>
-        {selectedUser?.type === "group" ? (
-          <button>members</button>
-        ) : (
-          <button>profile</button>
-        )}
+        {selectedUser?.type === "group" ? <button>members</button> : <button>profile</button>}
       </div>
 
       <div
@@ -200,9 +184,7 @@ function MainChat() {
           }}
         >
           {messages.length === 0 ? (
-            <div
-              style={{ textAlign: "center", color: "#888", marginTop: "20px" }}
-            >
+            <div style={{ textAlign: "center", color: "#888", marginTop: "20px" }}>
               Send messages to start a conversation
             </div>
           ) : (
@@ -263,7 +245,6 @@ function MainChat() {
               );
             })
           )}
-
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -288,11 +269,7 @@ function MainChat() {
           onChange={handleFileChange}
           disabled={!selectedUser}
         />
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={!selectedUser}
-        >
+        <button type="button" onClick={() => fileInputRef.current?.click()} disabled={!selectedUser}>
           📎
         </button>
         <input
@@ -311,11 +288,7 @@ function MainChat() {
           }}
         />
         {imageFile && (
-          <button
-            type="button"
-            onClick={() => setImageFile(null)}
-            style={{ flexShrink: 0 }}
-          >
+          <button type="button" onClick={() => setImageFile(null)} style={{ flexShrink: 0 }}>
             ❌
           </button>
         )}

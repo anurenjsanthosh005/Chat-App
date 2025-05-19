@@ -1,14 +1,30 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node.js / Frontend
+node_modules/
+dist/
+dist-ssr/
+.env
+*.local
+
 # Python bytecode files
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Django migrations (optional: you might want to keep them if collaborating)
+# Django migrations (optional: keep if collaborating)
 */migrations/*.pyc
 */migrations/*.py[cod]
 */migrations/__pycache__/
 
-# Virtual environment folder (if inside backend dir)
+# Python virtual environments
 venv/
 env/
 
@@ -22,6 +38,7 @@ backend/media/
 
 # IDE/editor specific files
 .vscode/
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
@@ -30,8 +47,12 @@ backend/media/
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Visual Studio files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Environment variables
 .env
