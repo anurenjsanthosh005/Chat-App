@@ -1,24 +1,25 @@
+import { Box } from "@mui/material";
 import NavBar from "../components/main/NavBar";
 import ChatList from "../components/chat/ChatList";
 import MainChat from "../components/chat/MainChat";
-import { useActiveUsers } from "../contexts/UsersContext";
 import MainChatSkeleton from "../components/chat/MainChatSkeleton";
+import { useActiveUsers } from "../contexts/UsersContext";
 
 const Dashboard = () => {
   const { selectedUser } = useActiveUsers();
-  
+
   return (
-    <div>
+    <Box>
       <NavBar />
-      <div style={{ display: "flex", width: "100%", height: "90vh" }}>
-        <div style={{ width: "25%" }}>
+      <Box display="flex" width="100%" height="90vh" sx={{bgcolor:'#f5e8ea'}}>
+        <Box width="25%" borderRight="1px solid #ccc" overflow="auto">
           <ChatList />
-        </div>
-        <div style={{ backgroundColor: "green", width: "75%" }}>
-          {!selectedUser ? <MainChatSkeleton /> : <MainChat />}
-        </div>
-      </div>
-    </div>
+        </Box>
+        <Box width="75%" bgcolor="#cb8c95a6" overflow="hidden">
+          {selectedUser ? <MainChat /> : <MainChatSkeleton />}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

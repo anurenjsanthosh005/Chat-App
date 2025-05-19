@@ -3,6 +3,21 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../contexts/AuthContext";
 import { useActiveUsers } from "../../contexts/UsersContext";
 import axiosInstance from "../../services/axiosInstance";
+import {
+  Box,
+  Typography,
+  Avatar,
+  TextField,
+  IconButton,
+  Button,
+  Paper,
+} from "@mui/material";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import SendIcon from "@mui/icons-material/Send";
+import CloseIcon from "@mui/icons-material/Close";
+import PersonIcon from "@mui/icons-material/Person";
+import GroupIcon from "@mui/icons-material/Group";
+import UserDetails from "../users/UserDetails";
 
 function MainChat() {
   const { id } = useAuth();
@@ -15,6 +30,7 @@ function MainChat() {
   const messagesEndRef = useRef(null);
   const socketRef = useRef(null);
   const fileInputRef = useRef(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { register, handleSubmit, reset, setValue, watch } = useForm();
   const watchMessage = watch("message");
@@ -42,7 +58,7 @@ function MainChat() {
 
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("RECIEVED MESSAGE :",data);
+      console.log("RECIEVED MESSAGE :", data);
 
       setMessages((prev) => {
         if (prev.some((msg) => msg.id === data.id)) {
@@ -81,7 +97,9 @@ function MainChat() {
 
       return res.data.content;
     } catch (err) {
-      alert("Image upload failed: " + (err.response?.data?.error || err.message));
+      alert(
+        "Image upload failed: " + (err.response?.data?.error || err.message)
+      );
       return null;
     }
   };
@@ -134,173 +152,264 @@ function MainChat() {
 
   const getImageSrc = (msg) => {
     if (msg.isImage) {
-      return msg.content.startsWith("http") ? msg.content : `${MEDIA_BASE_URL}${msg.content}`;
+      return msg.content.startsWith("http")
+        ? msg.content
+        : `${MEDIA_BASE_URL}${msg.content}`;
     }
     return "";
   };
+  const handleView = (user) => {
+    setModalOpen(true);
+  };
 
   return (
-    <div style={{ width: "100%", height: "90vh", display: "flex", flexDirection: "column" }}>
-      <div
-        style={{
-          height: "7%",
-          backgroundColor: "red",
+    <Box
+      sx={{
+        width: "100%",
+        height: "90vh",
+        display: "flex",
+        flexDirection: "column",
+        bgcolor: "yellow",
+      }}
+    >
+      <UserDetails
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        user={selectedUser}
+      />
+      <Box
+        sx={{
+          component: "header",
           display: "flex",
           alignItems: "center",
-          padding: "0 10px",
-          gap: "10px",
-          width: "95%",
+          px: "3%",
+          width: "94%",
+          height: "8vh",
+          gap: "2",
+          backgroundColor: "#dc3545",
         }}
       >
-        <div
-          style={{
-            width: "25px",
-            height: "25px",
-            backgroundColor: "white",
-            borderRadius: "50%",
-          }}
-        />
-        <h3 style={{ margin: 0 }}>{selectedUser?.name || "Select a user"}</h3>
-        {selectedUser?.type === "group" ? <button>members</button> : <button>profile</button>}
-      </div>
-
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "10px",
-          backgroundColor: "#f0f0f0",
-          display: "flex",
-          flexDirection: "column",
-          width: "95%",
-        }}
-      >
-        <div
-          style={{
-            marginTop: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
+        {selectedUser?.type === "group" ? (
+          <GroupIcon sx={{ color: "white" }} />
+        ) : (
+          <PersonIcon sx={{ color: "white" }} />
+        )}
+        <Typography
+          variant="h6"
+          noWrap
+          sx={{ flexGrow: 1, color: "#f0e7e8", pl: 2, fontWeight: "600" }}
         >
+          {selectedUser?.name || "Select a user"}
+        </Typography>
+        {selectedUser?.type === "group" ? (
+          <Button
+            variant="contained"
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleView(selectedUser);
+            }}
+            sx={{
+              backgroundColor: "#74212d",
+              color: "white",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "#5a131e",
+              },
+            }}
+          >
+            Members
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleView(selectedUser);
+            }}
+            sx={{
+              backgroundColor: "#74212d",
+              color: "white",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "#5a131e",
+              },
+            }}
+          >
+            Profile
+          </Button>
+        )}
+      </Box>
+      <Box
+        flex={1}
+        overflow="auto"
+        p={2}
+        bgcolor="#f0f0f0"
+        display="flex"
+        flexDirection="column"
+        width="96.6%"
+      >
+        <Box mt="auto" display="flex" flexDirection="column" gap={2}>
           {messages.length === 0 ? (
-            <div style={{ textAlign: "center", color: "#888", marginTop: "20px" }}>
+            <Typography align="center" color="#888" mt={2}>
               Send messages to start a conversation
-            </div>
+            </Typography>
           ) : (
             messages.map((msg) => {
               const isCurrentUser = msg.senderId === currentUserId;
               const isGroupChat = selectedUser?.type === "group";
 
               return (
-                <div
+                <Box
                   key={msg.id || msg.timestamp}
-                  style={{
-                    maxWidth: "60%",
-                    alignSelf: isCurrentUser ? "flex-end" : "flex-start",
-                    backgroundColor: isCurrentUser ? "#DCF8C6" : "#ffffff",
-                    padding: "8px 12px",
-                    borderRadius: "12px",
-                    marginBottom: "10px",
+                  maxWidth="60%"
+                  bgcolor={isCurrentUser ? "#fcb5c1e4" : "#ffffff"}
+                  p={1.5}
+                  borderRadius={2}
+                  // width='100px'
+                  mb={1}
+                  sx={{
                     wordBreak: "break-word",
+                    ml: isCurrentUser ? "auto" : 0,
+                    mr: isCurrentUser ? 0 : "auto",
+                    width:'850px'
                   }}
                 >
                   {isGroupChat && !isCurrentUser && (
-                    <div
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: "12px",
-                        marginBottom: "4px",
-                        color: "#333",
-                      }}
+                    <Typography
+                      fontSize={12}
+                      fontWeight="bold"
+                      color="#333"
+                      mb={0.5}
                     >
                       {msg.senderName}
-                    </div>
+                    </Typography>
                   )}
 
                   {msg.isImage ? (
-                    <img
+                    <Box
+                      component="img"
                       src={getImageSrc(msg)}
                       alt="sent"
-                      style={{ maxWidth: "100%", borderRadius: "6px" }}
+                      sx={{
+                        maxWidth: "100%",
+                        borderRadius: 1,
+                      }}
                     />
                   ) : (
-                    <div>{msg.content}</div>
+                    <Typography>{msg.content}</Typography>
                   )}
 
-                  <div
-                    style={{
-                      fontSize: "10px",
-                      color: "#555",
-                      marginTop: "4px",
-                      textAlign: "right",
-                    }}
+                  <Typography
+                    fontSize={10}
+                    color="#555"
+                    mt={0.5}
+                    textAlign="right"
                   >
                     {new Date(msg.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
-                  </div>
-                </div>
+                  </Typography>
+                </Box>
               );
             })
           )}
           <div ref={messagesEndRef} />
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        style={{
-          height: "10%",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          padding: "10px",
+      <Box
+        component="footer"
+        sx={{
+          width: "100%",
           borderTop: "1px solid #ccc",
-          width: "95%",
+          backgroundColor: "#96182c",
+          position: "relative",
+          bottom: 0,
         }}
       >
-        <input
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          disabled={!selectedUser}
-        />
-        <button type="button" onClick={() => fileInputRef.current?.click()} disabled={!selectedUser}>
-          📎
-        </button>
-        <input
-          type="text"
-          {...register("message", { required: !imageFile })}
-          placeholder={imageFile ? `📷 ${imageFile.name}` : "Type a message"}
-          value={imageFile ? `📷 ${imageFile.name}` : watchMessage || ""}
-          onChange={(e) => !imageFile && setValue("message", e.target.value)}
-          readOnly={!!imageFile}
-          disabled={!selectedUser}
-          style={{
-            flex: 1,
-            padding: "8px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
-        />
-        {imageFile && (
-          <button type="button" onClick={() => setImageFile(null)} style={{ flexShrink: 0 }}>
-            ❌
-          </button>
-        )}
-        <button
-          type="submit"
-          disabled={!selectedUser || (!imageFile && !watchMessage)}
-          style={{ flexShrink: 0 }}
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          display="flex"
+          alignItems="center"
+          gap={1}
+          px={2}
+          py={1}
         >
-          Send
-        </button>
-      </form>
-    </div>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+            disabled={!selectedUser}
+          />
+
+          <IconButton
+            onClick={() => fileInputRef.current?.click()}
+            disabled={!selectedUser}
+            sx={{ color: "black" }}
+          >
+            <AttachFileIcon />
+          </IconButton>
+
+          <TextField
+            fullWidth
+            size="small"
+            placeholder={imageFile ? `📷 ${imageFile.name}` : "Type a message"}
+            disabled={!selectedUser}
+            {...register("message", { required: !imageFile })}
+            value={imageFile ? `📷 ${imageFile.name}` : watchMessage || ""}
+            onChange={(e) => !imageFile && setValue("message", e.target.value)}
+            InputProps={{
+              readOnly: !!imageFile,
+              sx: {
+                color: "white",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "black",
+                },
+              },
+            }}
+            sx={{
+              input: {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "black",
+                },
+                "&:hover fieldset": {
+                  borderColor: "black",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "black",
+                },
+              },
+            }}
+          />
+
+          {imageFile && (
+            <IconButton
+              sx={{ color: "black" }}
+              onClick={() => setImageFile(null)}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
+
+          <IconButton
+            type="submit"
+            disabled={!selectedUser || (!imageFile && !watchMessage)}
+            sx={{ color: "black" }}
+          >
+            <SendIcon />
+          </IconButton>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
