@@ -13,6 +13,7 @@ class Message(models.Model):
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_messages', null=True, blank=True, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, related_name='messages', null=True, blank=True, on_delete=models.CASCADE)
     content = models.TextField()
+    is_image = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

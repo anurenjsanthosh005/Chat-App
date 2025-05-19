@@ -9,12 +9,16 @@ export const UsersProvider = ({ children }) => {
   const [activeUsers, setActiveUsers] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeGroups, setActiveGroups] = useState(null);
-  const [chatTab, setChatTab] = useState("chat");
+  const [chatTab, setChatTab] = useState("chats");
   const { token } = useAuth();
 
   useEffect(() => {
     const storedChatTab = localStorage.getItem("chatTab");
-    setChatTab(storedChatTab);
+    if (storedChatTab)
+      setChatTab(storedChatTab);
+    else{
+      setChatTab("chats")
+    }
   }, []);
 
   useEffect(() => {

@@ -2,19 +2,23 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../contexts/AuthContext";
 import { useActiveUsers } from "../contexts/UsersContext";
+import axiosInstance from "../services/axiosInstance";
 
 function MainChat() {
   const { id } = useAuth();
-  const currentUserId = Number(id); // Convert to number here
-
+  const currentUserId = Number(id);
   const { token } = useAuth();
   const { selectedUser } = useActiveUsers();
 
   const [messages, setMessages] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
   const messagesEndRef = useRef(null);
   const socketRef = useRef(null);
+  const fileInputRef = useRef(null);
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue, watch } = useForm();
+  const watchMessage = watch("message");
+  const MEDIA_BASE_URL = "http://localhost:8000";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,7 +42,13 @@ function MainChat() {
 
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setMessages((prev) => [...prev, data]);
+      setMessages((prev) => {
+        // Check if message with same id exists
+        if (prev.some((msg) => msg.id === data.id)) {
+          return prev; // ignore duplicate
+        }
+        return [...prev, data];
+      });
     };
 
     socketRef.current.onclose = () => {
@@ -50,22 +60,70 @@ function MainChat() {
     };
   }, [selectedUser, token]);
 
-  const onSubmit = (data) => {
+  // Upload image and return image URL
+  const uploadImage = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      // 👇 Add either group_id or receiver_id
+      if (selectedUser.type === "group") {
+        formData.append("group_id", selectedUser.id);
+      } else {
+        formData.append("receiver_id", selectedUser.id);
+      }
+
+      const res = await axiosInstance.post("/upload-image/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return res.data.content;
+    } catch (err) {
+      alert("Image upload failed: " + err.response?.data?.error || err.message);
+      return null;
+    }
+  };
+
+  // Handle file selection
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageFile(file);
+    setValue("message", ""); // clear text input
+    e.target.value = "";
+  };
+
+  const onSubmit = async (data) => {
     if (!selectedUser) return;
+
+    let content = data.message;
+    let isImage = false;
+
+    if (imageFile) {
+      const imageUrl = await uploadImage(imageFile);
+      if (!imageUrl) return; // stop if upload fails
+      content = imageUrl;
+      isImage = true;
+    }
 
     const newMessage =
       selectedUser.type === "group"
         ? {
             senderId: currentUserId,
             groupId: selectedUser.id,
-            content: data.message,
+            content,
+            isImage,
             timestamp: new Date().toISOString(),
           }
         : {
-            id: Date.now(),
+            // id: Date.now(),
             senderId: currentUserId,
             receiverId: selectedUser.id,
-            content: data.message,
+            content,
+            isImage,
             timestamp: new Date().toISOString(),
           };
 
@@ -74,6 +132,16 @@ function MainChat() {
     }
 
     reset();
+    setImageFile(null);
+  };
+
+  const getImageSrc = (msg) => {
+    if (msg.isImage) {
+      return msg.content.startsWith("http")
+        ? msg.content
+        : `${MEDIA_BASE_URL}${msg.content}`;
+    }
+    return "";
   };
 
   return (
@@ -104,9 +172,8 @@ function MainChat() {
             borderRadius: "50%",
           }}
         />
-        {console.log('SEKECTED USER :',selectedUser)}
         <h3 style={{ margin: 0 }}>{selectedUser?.name || "Select a user"}</h3>
-        {selectedUser.type === "group" ? (
+        {selectedUser?.type === "group" ? (
           <button>members</button>
         ) : (
           <button>profile</button>
@@ -132,7 +199,6 @@ function MainChat() {
             gap: "10px",
           }}
         >
-          {console.log("MESSAGE DATA :",messages, messages.length)}
           {messages.length === 0 ? (
             <div
               style={{ textAlign: "center", color: "#888", marginTop: "20px" }}
@@ -146,7 +212,7 @@ function MainChat() {
 
               return (
                 <div
-                  key={msg.id}
+                  key={msg.id || msg.timestamp}
                   style={{
                     maxWidth: "60%",
                     alignSelf: isCurrentUser ? "flex-end" : "flex-start",
@@ -154,6 +220,7 @@ function MainChat() {
                     padding: "8px 12px",
                     borderRadius: "12px",
                     marginBottom: "10px",
+                    wordBreak: "break-word",
                   }}
                 >
                   {isGroupChat && !isCurrentUser && (
@@ -169,7 +236,15 @@ function MainChat() {
                     </div>
                   )}
 
-                  <div>{msg.content}</div>
+                  {msg.isImage ? (
+                    <img
+                      src={getImageSrc(msg)}
+                      alt="sent"
+                      style={{ maxWidth: "100%", borderRadius: "6px" }}
+                    />
+                  ) : (
+                    <div>{msg.content}</div>
+                  )}
 
                   <div
                     style={{
@@ -205,20 +280,50 @@ function MainChat() {
           width: "95%",
         }}
       >
-        <button type="button">📎</button>
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          disabled={!selectedUser}
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={!selectedUser}
+        >
+          📎
+        </button>
         <input
           type="text"
-          {...register("message", { required: true })}
-          placeholder="Type a message"
+          {...register("message", { required: !imageFile })}
+          placeholder={imageFile ? `📷 ${imageFile.name}` : "Type a message"}
+          value={imageFile ? `📷 ${imageFile.name}` : watchMessage || ""}
+          onChange={(e) => !imageFile && setValue("message", e.target.value)}
+          readOnly={!!imageFile}
+          disabled={!selectedUser}
           style={{
             flex: 1,
             padding: "8px",
             borderRadius: "5px",
             border: "1px solid #ccc",
           }}
-          disabled={!selectedUser}
         />
-        <button type="submit" disabled={!selectedUser}>
+        {imageFile && (
+          <button
+            type="button"
+            onClick={() => setImageFile(null)}
+            style={{ flexShrink: 0 }}
+          >
+            ❌
+          </button>
+        )}
+        <button
+          type="submit"
+          disabled={!selectedUser || (!imageFile && !watchMessage)}
+          style={{ flexShrink: 0 }}
+        >
           Send
         </button>
       </form>
