@@ -19,12 +19,11 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = '__all__'  # or explicitly list fields including image_url
+        fields = '__all__'
 
     def get_image_url(self, obj):
         if obj.is_image:
             request = self.context.get('request')
-            # If your content field stores a relative path or full URL
             if obj.content:
                 if request:
                     return request.build_absolute_uri(obj.content)

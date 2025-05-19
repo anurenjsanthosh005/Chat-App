@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useActiveUsers } from "../contexts/UsersContext";
-import { useAuth } from "../contexts/AuthContext";
+import { useActiveUsers } from "../../contexts/UsersContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 function ChatList() {
   const { activeUsers, setSelectedUser, activeGroups, chatTab, setChatTab } =
@@ -28,11 +28,9 @@ function ChatList() {
     }
   }, [chatTab, activeUsers, activeGroups, currentUserId]);
 
-  // console.log('LOGGED IN USER IDDD :',id);
-  // console.log("ACTIVE USERS", activeUsers);
 
   if (loading || !activeUsers) {
-    return <div>Loading chat users...</div>; // Or null
+    return <div>Loading chat users...</div>;
   }
 
   const handleSelect = (user) => {

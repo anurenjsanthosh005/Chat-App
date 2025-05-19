@@ -33,6 +33,5 @@ def upload_chat_image(request):
 
     image_path = default_storage.save(f'chat_images/{image.name}', ContentFile(image.read()))
     image_url = default_storage.url(image_path)
-    full_image_url = MEDIA_BASE_URL + image_url
 
     return Response({'content': image_url})

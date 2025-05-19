@@ -1,6 +1,6 @@
 import React from 'react'
-import NavBar from '../components/NavBar'
-import UserList from '../components/UserList'
+import NavBar from '../components/main/NavBar'
+import UserList from '../components/users/UserList'
 
 const AdminPanel = () => {
   return (

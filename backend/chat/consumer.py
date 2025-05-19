@@ -147,13 +147,12 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_data = data.get('message', {})
         content = message_data.get('content', '')
-        is_image = message_data.get('isImage', False)  # check isImage flag
+        is_image = message_data.get('isImage', False)
         sender = self.user
 
         if not content:
             return
 
-        # Create Message object with is_image and content
         msg_obj = await database_sync_to_async(Message.objects.create)(
             sender=sender,
             group=self.group,

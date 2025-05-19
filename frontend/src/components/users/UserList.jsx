@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useActiveUsers } from "../contexts/UsersContext";
+import { useActiveUsers } from "../../contexts/UsersContext";
 import UserDetails from "./UserDetails";
 
 function UserList() {

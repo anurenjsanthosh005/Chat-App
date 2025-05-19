@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../contexts/AuthContext";
-import { useActiveUsers } from "../contexts/UsersContext";
-import axiosInstance from "../services/axiosInstance";
+import { useAuth } from "../../contexts/AuthContext";
+import { useActiveUsers } from "../../contexts/UsersContext";
+import axiosInstance from "../../services/axiosInstance";
 
 function MainChat() {
   const { id } = useAuth();

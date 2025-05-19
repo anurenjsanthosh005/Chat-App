@@ -1,8 +1,8 @@
-import NavBar from "../components/NavBar";
-import ChatList from "../components/ChatList";
-import MainChat from "../components/MainChat";
+import NavBar from "../components/main/NavBar";
+import ChatList from "../components/chat/ChatList";
+import MainChat from "../components/chat/MainChat";
 import { useActiveUsers } from "../contexts/UsersContext";
-import MainChatSkeleton from "../components/MainChatSkeleton";
+import MainChatSkeleton from "../components/chat/MainChatSkeleton";
 
 const Dashboard = () => {
   const { selectedUser } = useActiveUsers();
