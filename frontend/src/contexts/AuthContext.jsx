@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const savedRole = localStorage.getItem("role");
     const savedName = localStorage.getItem("name");
     const savedId = localStorage.getItem("id");
-    if (savedToken && savedRefresh ) {
+    if (savedToken && savedRefresh) {
       setToken(savedToken);
       setRefresh(savedRefresh);
       setRole(savedRole);
@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const userLogout = () => {
-
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("role");
@@ -49,6 +48,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("id");
     localStorage.removeItem("selectedUser");
     localStorage.removeItem("selectedUserId");
+    localStorage.removeItem("chatTab");
 
     setToken(null);
     setRefresh(null);
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ token, refresh, role, name, id, userLogin, userLogout, loading  }}
+      value={{ token, refresh, role, name, id, userLogin, userLogout, loading }}
     >
       {children}
     </AuthContext.Provider>

@@ -104,6 +104,7 @@ function MainChat() {
             borderRadius: "50%",
           }}
         />
+        {console.log('SEKECTED USER :',selectedUser)}
         <h3 style={{ margin: 0 }}>{selectedUser?.name || "Select a user"}</h3>
         {selectedUser.type === "group" ? (
           <button>members</button>
@@ -131,6 +132,7 @@ function MainChat() {
             gap: "10px",
           }}
         >
+          {console.log("MESSAGE DATA :",messages, messages.length)}
           {messages.length === 0 ? (
             <div
               style={{ textAlign: "center", color: "#888", marginTop: "20px" }}

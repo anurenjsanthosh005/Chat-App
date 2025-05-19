@@ -3,17 +3,17 @@ import { useActiveUsers } from "../contexts/UsersContext";
 import { useAuth } from "../contexts/AuthContext";
 
 function ChatList() {
-  const { activeUsers, setSelectedUser,activeGroups  } = useActiveUsers();
+  const { activeUsers, setSelectedUser, activeGroups, chatTab, setChatTab } =
+    useActiveUsers();
   const { id, loading } = useAuth();
   const currentUserId = Number(id);
-  const [activeTab, setActiveTab] = useState("chats");
 
   const [listItems, setListItems] = useState([]);
 
   useEffect(() => {
     if (!activeUsers && !activeGroups) return;
 
-    if (activeTab === "chats") {
+    if (chatTab === "chats") {
       setListItems(
         activeUsers
           ? activeUsers.filter(
@@ -21,10 +21,12 @@ function ChatList() {
             )
           : []
       );
-    } else if (activeTab === "groups") {
+      localStorage.setItem("chatTab", chatTab);
+    } else if (chatTab === "groups") {
       setListItems(activeGroups || []);
+      localStorage.setItem("chatTab", chatTab);
     }
-  }, [activeTab, activeUsers, activeGroups, currentUserId]);
+  }, [chatTab, activeUsers, activeGroups, currentUserId]);
 
   // console.log('LOGGED IN USER IDDD :',id);
   // console.log("ACTIVE USERS", activeUsers);
@@ -41,8 +43,8 @@ function ChatList() {
   return (
     <div>
       <div style={{ display: "flex", margin: "10px" }}>
-        <button onClick={() => setActiveTab("chats")}>chat list</button>
-        <button onClick={() => setActiveTab("groups")}>groups</button>
+        <button onClick={() => setChatTab("chats")}>chat list</button>
+        <button onClick={() => setChatTab("groups")}>groups</button>
       </div>
       {listItems.map((item) => {
         return (
