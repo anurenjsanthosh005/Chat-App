@@ -7,11 +7,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         users_data = [
-            {'email': 'admin@mail.com', 'name': 'Admin', 'password': 'admin123', 'role': 'admin'},
-            {'email': 'user1@mail.com', 'name': 'User One', 'password': 'user123', 'role': 'user'},
-            {'email': 'user2@mail.com', 'name': 'User Two', 'password': 'user123', 'role': 'user'},
-            {'email': 'user3@mail.com', 'name': 'User Three', 'password': 'user123', 'role': 'user'},
-            {'email': 'user4@mail.com', 'name': 'User Four', 'password': 'user123', 'role': 'user'},
+            {'email': 'admin@gmail.com', 'name': 'Admin', 'password': 'pass123', 'role': 'admin'},
+            {'email': 'user1@gmail.com', 'name': 'User One', 'password': 'pass123', 'role': 'user'},
+            {'email': 'user2@gmail.com', 'name': 'User Two', 'password': 'pass123', 'role': 'user'},
+            {'email': 'user3@gmail.com', 'name': 'User Three', 'password': 'pass123', 'role': 'user'},
+            {'email': 'user4@gmail.com', 'name': 'User Four', 'password': 'pass123', 'role': 'user'},
         ]
 
         created_users = {}
@@ -35,8 +35,8 @@ class Command(BaseCommand):
         group_name = "group chat"
         group, created = Group.objects.get_or_create(name=group_name)
         group.members.set([
-            created_users['user1@mail.com'],
-            created_users['user2@mail.com'],
-            created_users['user3@mail.com']
+            created_users['user1@gmail.com'],
+            created_users['user2@gmail.com'],
+            created_users['user3@gmail.com']
         ])
         self.stdout.write(self.style.SUCCESS(f'Group "{group_name}" created with 3 users'))

@@ -2,11 +2,9 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Group, Message
-from .serializers import GroupSerializer, MessageSerializer
-from users.models import User
+from .models import Group
+from .serializers import GroupSerializer
 from django.core.files.storage import default_storage
-from backend.settings import MEDIA_BASE_URL
 from django.core.files.base import ContentFile
 
 
