@@ -12,9 +12,9 @@ function ChatList() {
   const currentUserId = Number(id);
   const [listItems, setListItems] = useState([]);
 
-  const isMemberOfAnyGroup = activeGroups?.some((group) =>
-    group.members?.includes(currentUserId)
-  );
+  var isMemberOfAnyGroup = activeGroups
+    ? activeGroups.some((group) => group.members?.some((item)=>item.id === currentUserId))
+    : false;  
 
   useEffect(() => {
     if (!activeUsers && !activeGroups) return;
