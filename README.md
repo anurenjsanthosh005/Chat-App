@@ -15,6 +15,9 @@ A real-time chat application with 1-to-1 and group messaging built using **React
 
 ## Getting Started
 
+### Clone the repo using command
+git clone https://github.com/anurenjsanthosh005/Chat-App.git
+
 ### Backend Setup
 
 ```bash
