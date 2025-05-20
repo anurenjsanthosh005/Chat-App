@@ -18,14 +18,42 @@ A real-time chat application with 1-to-1 and group messaging built using **React
 ### Backend Setup
 
 ```bash
+
 cd Chat-App/backend
+
+
+# Navigate to backend folder
+
+cd Chat-App/backend
+
+
+# Create and activate virtual environment
+
 python -m venv venv
-# On Windows use `venv\Scripts\activate`
-source venv/bin/activate
+
+source venv/bin/activate          # On Windows: venv\Scripts\activate
+
+
+# Install Python dependencies
+
 pip install -r requirements.txt
+
+
+# Run database migrations
+
 python manage.py migrate
-python manage.py create_default_users   # Create default users and a group chat
-daphne backend.asgi:application          # Runs backend server at http://127.0.0.1:8000
+
+
+# Create default users and a group chat
+
+python manage.py create_default_users
+
+
+# Start backend server with Daphne
+
+daphne backend.asgi:application   # Runs on http://127.0.0.1:8000
+
+
 ```
 
 ### Frontend Setup
@@ -33,7 +61,9 @@ daphne backend.asgi:application          # Runs backend server at http://127.0.0
 ```bash
 
 cd chat-app-react
+
 npm install
+
 npm run dev    # Runs frontend at http://localhost:5173 by default
 
 ```
@@ -45,13 +75,11 @@ To simplify testing and save time, default users and a group chat are created au
 
 ## Default User Credentials
 
-Name: Admin, Email: admin@gmail.com, Password: pass123
-Name: User One, Email: user1@gmail.com, Password: pass123
-Name: User Two, Email: user2@gmail.com, Password: pass123
-Name: User Three, Email: user3@gmail.com, Password: pass123
-Name: User Four, Email: user4@gmail.com, Password: pass123
-
----
+- Name: Admin       | Email: admin@gmail.com     | Password: pass123  
+- Name: User One    | Email: user1@gmail.com     | Password: pass123  
+- Name: User Two    | Email: user2@gmail.com     | Password: pass123  
+- Name: User Three  | Email: user3@gmail.com     | Password: pass123  
+- Name: User Four   | Email: user4@gmail.com     | Password: pass123  
 
 ## URLs
 
