@@ -27,9 +27,8 @@ function LoginPage() {
 
   const submitForm = async (data) => {
     try {
-      console.log("INSIDE THE SUBMI");
-
-      const { email, password } = data;
+      const email = data.email.trim();
+      const password = data.password;
       const response = await axiosInstance.post("/token/", { email, password });
       const { access, refresh, role, name, id } = response.data;
 
@@ -174,7 +173,7 @@ function LoginPage() {
             })}
             error={!!errors.password}
             helperText={errors.password ? errors.password.message : ""}
-           sx={{
+            sx={{
               width: 400,
               "& .MuiOutlinedInput-root": {
                 backgroundColor: "white",
@@ -203,7 +202,7 @@ function LoginPage() {
             type="submit"
             variant="contained"
             fullWidth
-            sx={{ mt: 4, bgcolor: "#792830", fontWeight:'600'}}
+            sx={{ mt: 4, bgcolor: "#792830", fontWeight: "600" }}
           >
             Login
           </Button>
