@@ -19,12 +19,10 @@ A real-time chat application with 1-to-1 and group messaging built using **React
 
 ```bash
 
-cd Chat-App/backend
-
 
 # Navigate to backend folder
 
-cd Chat-App/backend
+cd chat-app/backend
 
 
 # Create and activate virtual environment
@@ -59,8 +57,9 @@ daphne backend.asgi:application   # Runs on http://127.0.0.1:8000
 ### Frontend Setup
 
 ```bash
+# Navigate to frontend folder
 
-cd chat-app-react
+cd chat-app/frontend
 
 npm install
 
