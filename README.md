@@ -6,7 +6,7 @@ A real-time chat application with 1-to-1 and group messaging built using **React
 
 ## Tech Stack
 
-- **Frontend:** React (Vite), Redux Toolkit, Material UI  
+- **Frontend:** React (Vite), Material UI  
 - **Backend:** Django, Django REST Framework, Simple JWT  
 - **Real-Time:** Django Channels, Daphne  
 - **Database:** SQLite (default)
@@ -31,6 +31,10 @@ A real-time chat application with 1-to-1 and group messaging built using **React
 git clone https://github.com/anurenjsanthosh005/Chat-App.git
 
 ---
+### Note
+For Linux/macOS: use "pip3" , "python3" instead of "pip" or "python"
+
+---
 
 ### Backend Setup
 
@@ -39,7 +43,7 @@ git clone https://github.com/anurenjsanthosh005/Chat-App.git
 
 # Navigate to backend folder
 
-cd chat-app/backend
+cd Chat-App/backend
 
 
 # Create and activate virtual environment
@@ -77,7 +81,7 @@ daphne backend.asgi:application   # Runs on http://127.0.0.1:8000
 ```bash
 # Navigate to frontend folder
 
-cd chat-app/frontend
+cd Chat-App/frontend
 
 npm install
 
