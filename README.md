@@ -12,11 +12,25 @@ A real-time chat application with 1-to-1 and group messaging built using **React
 - **Database:** SQLite (default)
 
 ---
+## Prerequisites
 
+### Before running this project, make sure you have the following installed:
+
+- Node.js – for running the frontend
+
+- Python – for running the backend
+
+- pip – Python package manager (usually comes with Python)
+
+- Git – to clone the repository
+  
+---
 ## Getting Started
 
 ### Clone the repo using command
 git clone https://github.com/anurenjsanthosh005/Chat-App.git
+
+---
 
 ### Backend Setup
 
@@ -56,6 +70,7 @@ daphne backend.asgi:application   # Runs on http://127.0.0.1:8000
 
 
 ```
+---
 
 ### Frontend Setup
 
@@ -69,19 +84,20 @@ npm install
 npm run dev    # Runs frontend at http://localhost:5173 by default
 
 ```
-
+---
 ### Note on Signup
 This app does not include a signup feature because it was not part of the project requirements.
-To simplify testing and save time, default users and a group chat are created automatically using the create_default_users command.
+To simplify testing and save time, default users and a group chat are created automatically using the create_default_users command.You can switch between these predefined users with different roles to test role-based routing and access control.
 
+---
 
 ## Default User Credentials
 
-- Name: Admin       | Email: admin@gmail.com     | Password: pass123  
-- Name: User One    | Email: user1@gmail.com     | Password: pass123  
-- Name: User Two    | Email: user2@gmail.com     | Password: pass123  
-- Name: User Three  | Email: user3@gmail.com     | Password: pass123  
-- Name: User Four   | Email: user4@gmail.com     | Password: pass123  
+- Name: Admin       | Email: admin@gmail.com     | Password: pass123 | Role: admin
+- Name: User One    | Email: user1@gmail.com     | Password: pass123 | Role: user
+- Name: User Two    | Email: user2@gmail.com     | Password: pass123 | Role: user
+- Name: User Three  | Email: user3@gmail.com     | Password: pass123 | Role: user
+- Name: User Four   | Email: user4@gmail.com     | Password: pass123 | Role: user
 
 ## URLs
 
